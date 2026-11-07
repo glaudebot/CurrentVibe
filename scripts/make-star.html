@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><style>html,body{margin:0;background:transparent}canvas{display:block}</style></head>
+<body><canvas id="c" width="64" height="64"></canvas>
+<script>
+// Dev-only: renders assets/star-source.webp to icons/star.png (64px). Serve the repo root, then:
+// msedge --headless=new --default-background-color=00000000 --window-size=64,64 --screenshot=icons/star.png <url>/scripts/make-star.html
+const img = new Image();
+img.onload = () => {
+  const step = (src, sx, sy, sw, size, out) => {
+    const c = out || document.createElement('canvas');
+    c.width = c.height = size;
+    const x = c.getContext('2d');
+    x.imageSmoothingQuality = 'high';
+    x.drawImage(src, sx, sy, sw, sw, 0, 0, size, size);
+    return c;
+  };
+  const a = step(img, 121, 149, 1132, 256);
+  const b = step(a, 0, 0, 256, 128);
+  step(b, 0, 0, 128, 64, document.getElementById('c'));
+};
+img.src = '/assets/star-source.webp';
+</script></body></html>

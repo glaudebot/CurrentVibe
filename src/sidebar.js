@@ -20,13 +20,22 @@ function el(tag, cls, text) {
   return e;
 }
 
-function copyButton(cls, label, title, getText) {
-  const b = el('button', cls, label);
+function img(name) {
+  const i = el('img');
+  i.src = `icons/${name}`;
+  i.alt = '';
+  return i;
+}
+
+// content/done: text or node shown before and after copying.
+function copyButton(cls, content, done, title, getText) {
+  const b = el('button', cls);
+  b.append(content);
   if (title) b.title = title;
   b.addEventListener('click', async () => {
     await navigator.clipboard.writeText(getText());
-    b.textContent = t('copied');
-    setTimeout(() => { b.textContent = label; }, 1500);
+    b.replaceChildren(done);
+    setTimeout(() => b.replaceChildren(content), 1500);
   });
   return b;
 }
@@ -37,8 +46,8 @@ function renderItem(r) {
   const title = el('div', 'title');
   title.append(el('span', 'rank', r.rank), el('span', 'name', r.name));
   title.title = r.name;
-  const stars = el('span', 'stars', '⭐ ' + formatCount(r.stars));
-  stars.append(el('span', 'gain', '+' + formatCount(r.gain)));
+  const stars = el('span', 'stars');
+  stars.append(img('star.png'), formatCount(r.stars), el('span', 'gain', '+' + formatCount(r.gain)));
   top.append(title, stars);
   item.append(top);
   if (r.description) {
@@ -47,13 +56,14 @@ function renderItem(r) {
     item.append(d);
   }
   const actions = el('div', 'actions');
-  const open = el('button', 'icon', '🔗');
+  const open = el('button', 'icon');
+  open.append(img('link.png'));
   open.title = t('open');
   open.addEventListener('click', () => chrome.tabs.create({ url: r.url }));
   actions.append(
     open,
-    copyButton('icon', '📋', t('copyUrl'), () => r.url),
-    copyButton('primary', t('copyPrompt'), null, () => buildPrompt(lang, r)),
+    copyButton('icon', img('copy.png'), img('check.svg'), t('copyUrl'), () => r.url),
+    copyButton('primary', t('copyPrompt'), t('copied'), null, () => buildPrompt(lang, r)),
   );
   item.append(actions);
   return item;
