@@ -4,7 +4,7 @@ import { STRINGS, defaultLang } from './i18n.js';
 
 const $list = document.getElementById('list');
 const $tabs = [...document.querySelectorAll('#tabs button')];
-const $lang = document.getElementById('lang');
+const $langs = [...document.querySelectorAll('#lang button')];
 
 let lang = defaultLang(chrome.i18n?.getUILanguage?.() ?? navigator.language);
 let period = 'daily';
@@ -84,7 +84,7 @@ function renderItem(r) {
 
 function render() {
   document.documentElement.lang = lang;
-  $lang.textContent = lang === 'ko' ? 'KOR' : 'ENG';
+  for (const b of $langs) b.classList.toggle('on', b.dataset.lang === lang);
   for (const b of $tabs) {
     b.textContent = t(b.dataset.period);
     b.classList.toggle('on', b.dataset.period === period);
@@ -126,8 +126,8 @@ async function load(p) {
 }
 
 for (const b of $tabs) b.addEventListener('click', () => load(b.dataset.period));
-$lang.addEventListener('click', () => {
-  lang = lang === 'ko' ? 'en' : 'ko';
+for (const b of $langs) b.addEventListener('click', () => {
+  lang = b.dataset.lang;
   chrome.storage.local.set({ lang });
   render();
 });
