@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "pack": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/pack.ps1"
   },
   "devDependencies": {
     "linkedom": "^0.18.15"
