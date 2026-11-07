@@ -13,9 +13,12 @@ body { font: 13px/1.4 system-ui, -apple-system, "Segoe UI", "Malgun Gothic", san
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
 header {
-  position: sticky; top: 0; z-index: 1; display: flex; gap: 8px; align-items: center;
+  position: sticky; top: 0; z-index: 1;
   padding: 10px 12px; background: var(--bg); border-bottom: 1px solid var(--line);
 }
+.brand { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 16px; font-weight: 700; }
+.brand img { width: 28px; height: 28px; border-radius: 6px; }
+.bar { display: flex; gap: 8px; align-items: center; }
 #tabs { flex: 1; display: flex; gap: 4px; }
 #tabs button {
   flex: 1; padding: 5px 0; border-radius: 6px; border: 1px solid var(--line); color: var(--muted);
