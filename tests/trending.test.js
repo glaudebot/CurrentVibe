@@ -37,6 +37,18 @@ test('parses handmade row', () => {
   });
 });
 
+test('gain ignores star counts in description', () => {
+  const html = row('<p class="col-9">Repos with 10,000 stars or more</p>');
+  const [r] = parseTrending(html, parser);
+  assert.equal(r.gain, 8726);
+});
+
+test('singular star gain', () => {
+  const html = row('').replace('8,726 stars this week', '1 star today');
+  const [r] = parseTrending(html, parser);
+  assert.equal(r.gain, 1);
+});
+
 test('missing description', () => {
   const [r] = parseTrending(row(''), parser);
   assert.equal(r.description, '');

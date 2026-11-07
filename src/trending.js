@@ -9,7 +9,7 @@ export function parseTrending(html, domParser) {
     const href = row.querySelector('h2 a')?.getAttribute('href');
     if (!href) continue;
     const name = href.replace(/^\//, '');
-    const gain = (row.textContent.match(/([\d,]+) stars/) || [])[1];
+    const gain = (row.textContent.match(/([\d,]+) stars? (today|this week|this month)/) || [])[1];
     repos.push({
       rank: repos.length + 1,
       name,
