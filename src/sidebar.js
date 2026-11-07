@@ -10,6 +10,8 @@ let lang = defaultLang(chrome.i18n?.getUILanguage?.() ?? navigator.language);
 let period = 'daily';
 let view = { status: 'loading' }; // { status: 'loading' | 'error' | 'ok', repos? }
 let token = 0;
+const MAIN = 10; // top 10 shown first, the rest behind "show more"
+let expanded = false;
 
 const t = (k) => STRINGS[lang][k];
 
@@ -27,13 +29,24 @@ function img(name) {
   return i;
 }
 
+const $toast = el('div', 'toast');
+document.body.append($toast);
+let toastTimer;
+function toast(msg) {
+  $toast.textContent = msg;
+  $toast.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $toast.classList.remove('on'), 1600);
+}
+
 // content/done: text or node shown before and after copying.
-function copyButton(cls, content, done, title, getText) {
+function copyButton(cls, content, done, tip, toastKey, getText) {
   const b = el('button', cls);
   b.append(content);
-  if (title) b.title = title;
+  if (tip) b.dataset.tip = b.ariaLabel = tip;
   b.addEventListener('click', async () => {
     await navigator.clipboard.writeText(getText());
+    toast(t(toastKey));
     b.replaceChildren(done);
     setTimeout(() => b.replaceChildren(content), 1500);
   });
@@ -58,12 +71,12 @@ function renderItem(r) {
   const actions = el('div', 'actions');
   const open = el('button', 'icon');
   open.append(img('link.png'));
-  open.title = t('open');
+  open.dataset.tip = open.ariaLabel = t('open');
   open.addEventListener('click', () => chrome.tabs.create({ url: r.url }));
   actions.append(
     open,
-    copyButton('icon', img('copy.png'), img('check.svg'), t('copyUrl'), () => r.url),
-    copyButton('primary', t('copyPrompt'), t('copied'), null, () => buildPrompt(lang, r)),
+    copyButton('icon', img('copy.png'), img('check.svg'), t('copyUrl'), 'toastUrl', () => r.url),
+    copyButton('primary', t('copyPrompt'), t('copied'), null, 'toastPrompt', () => buildPrompt(lang, r)),
   );
   item.append(actions);
   return item;
@@ -86,12 +99,19 @@ function render() {
     s.append(el('br'), retry);
     $list.append(s);
   } else {
-    $list.append(...view.repos.map(renderItem));
+    const { repos } = view;
+    $list.append(...(expanded ? repos : repos.slice(0, MAIN)).map(renderItem));
+    if (!expanded && repos.length > MAIN) {
+      const more = el('button', 'more', `${t('showMore')} (${repos.length - MAIN})`);
+      more.addEventListener('click', () => { expanded = true; render(); });
+      $list.append(more);
+    }
   }
 }
 
 async function load(p) {
   period = p;
+  expanded = false;
   const mine = ++token;
   view = { status: 'loading' };
   render();
