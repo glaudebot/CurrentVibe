@@ -14,7 +14,7 @@ export function parseTrending(html, domParser) {
       rank: repos.length + 1,
       name,
       url: 'https://github.com/' + name,
-      description: row.querySelector('p')?.textContent.trim() ?? '',
+      description: row.querySelector('p.col-9')?.textContent.trim() ?? '',
       stars: toInt(row.querySelector('a[href$="/stargazers"]')?.textContent),
       gain: toInt(gain),
     });
@@ -35,7 +35,8 @@ const cache = new Map();
 export async function fetchTrending(period) {
   const hit = cache.get(period);
   if (hit && Date.now() - hit.at < TTL) return hit.repos;
-  const res = await fetch(`https://github.com/trending?since=${period}`);
+  // No cookies: logged-in GitHub serves different row markup.
+  const res = await fetch(`https://github.com/trending?since=${period}`, { credentials: 'omit' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const repos = parseTrending(await res.text(), new DOMParser());
   if (!repos.length) throw new Error('No repositories found');

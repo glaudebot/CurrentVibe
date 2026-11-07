@@ -49,6 +49,13 @@ test('singular star gain', () => {
   assert.equal(r.gain, 1);
 });
 
+test('description ignores other paragraphs in row', () => {
+  const html = row('<p class="col-9">Real description</p>')
+    .replace('<h2', '<div class="float-right"><p class="mb-2">Lists</p></div><h2');
+  const [r] = parseTrending(html, parser);
+  assert.equal(r.description, 'Real description');
+});
+
 test('missing description', () => {
   const [r] = parseTrending(row(''), parser);
   assert.equal(r.description, '');
