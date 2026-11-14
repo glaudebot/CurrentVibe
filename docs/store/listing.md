@@ -1,7 +1,7 @@
 # CurrentVibe 스토어 등록 정보
 
 ## 제출 파일
-- 패키지: `dist/currentvibe-1.0.0.zip` (`npm run pack`으로 생성)
+- 패키지: `dist/currentvibe-1.0.1.zip` (`npm run pack`으로 생성)
 - 아이콘: `icons/icon128.png` (128 × 128 PNG)
 - 스크린샷: `docs/store/screenshot-1.png`, `docs/store/screenshot-2.png`, `docs/store/screenshot-3.png` (1280 × 800 PNG)
 
