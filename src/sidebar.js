@@ -57,10 +57,10 @@ function renderItem(r) {
   const item = el('div', 'item');
   const top = el('div', 'row');
   const title = el('div', 'title');
-  title.append(el('span', 'rank', r.rank), el('span', 'name', r.name));
+  title.append(el('span', 'rank num', r.rank), el('span', 'name', r.name));
   title.title = r.name;
   const stars = el('span', 'stars');
-  stars.append(img('star.png'), formatCount(r.stars), el('span', 'gain', '+' + formatCount(r.gain)));
+  stars.append(img('star.png'), el('span', 'num', formatCount(r.stars)), el('span', 'gain num', '+' + formatCount(r.gain)));
   top.append(title, stars);
   item.append(top);
   if (r.description) {

@@ -14,6 +14,6 @@ test('defaultLang picks en otherwise', () => {
 
 test('ko and en have identical keys', () => {
   assert.deepEqual(Object.keys(STRINGS.ko).sort(), Object.keys(STRINGS.en).sort());
-  assert.equal(STRINGS.ko.copied, '복사됨 ✓');
+  assert.equal(STRINGS.ko.copied, '복사됨');
   assert.equal(STRINGS.ko.retry, '다시 시도');
 });
